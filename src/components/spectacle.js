@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from "react";
 
 import { Provider } from "react-redux";
-import configureStore from "../store";
+import configureStore, { subscribe, setupRemote } from "../store";
 
 import Controller from "../utils/controller";
 
@@ -11,8 +11,18 @@ export default class Spectacle extends Component {
   static propTypes = {
     children: PropTypes.node,
     history: PropTypes.object,
+    remote: PropTypes.object,
     theme: PropTypes.object
   };
+
+  componentWillMount() {
+    const { remote } = this.props;
+
+    if (remote) {
+      subscribe(remote);
+      setupRemote(remote);
+    }
+  }
 
   render() {
     return (
