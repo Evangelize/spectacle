@@ -2,8 +2,8 @@ import React from "react";
 
 import {
   Appear, BlockQuote, Cite, CodePane, Deck, Fill,
-  Heading, Image, Layout, Link, ListItem, List, Markdown, Quote, Slide, Spectacle,
-  TableHeaderItem, TableItem, TableRow, Table, Text
+  Heading, Image, Layout, Link, ListItem, List, Markdown, Quote, Shape,
+  Slide, Spectacle, TableHeaderItem, TableItem, TableRow, Table, Text
 } from "../../src";
 
 import Socket from "./socket";
@@ -185,6 +185,28 @@ You can write inline images, [Markdown Links](http://commonmark.org), paragraph 
                 </tbody>
               </Table>
             </Layout>
+          </Slide>
+          <Slide transition={["slide"]} bgColor="primary">
+            <Heading size={4} caps textColor="tertiary">
+              Shapes
+            </Heading>
+            <Shape
+              type="rectangle"
+              width={100}
+              height={100}
+              style={{ top: "100px", transform: "rotate(45deg)", margin: "20px 30px", float: "left", fill: "rgba(36, 9, 186, 0.80)", stroke: "rgba(255,255,255, 0.9)", strokeWidth: 3 }}
+            />
+            <Shape
+              type="circle"
+              r={75}
+              style={{ float: "left", fill: "rgba(36, 9, 186, 0.80)", stroke: "rgba(255,255,255, 0.9)", strokeWidth: 3 }}
+            />
+            <Shape
+              type="triangle"
+              width={125}
+              height={125}
+              style={{ margin: "10px 10px", float: "left", fill: "rgba(36, 9, 186, 0.80)", stroke: "#fff", strokeWidth: 3 }}
+            />
           </Slide>
           <Slide transition={["spin", "slide"]} bgColor="tertiary">
             <Heading size={1} caps fit lineHeight={1.5} textColor="primary">

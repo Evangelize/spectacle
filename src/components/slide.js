@@ -8,6 +8,9 @@ import { Transitionable, renderTransition } from "./transitionable";
 @Transitionable
 @Radium
 class Slide extends Component {
+  slideRef;
+  contentRef;
+
   state = {
     contentScale: 1,
     transitioning: true,
@@ -31,8 +34,8 @@ class Slide extends Component {
         }));
       });
     }
-    window.addEventListener("load", this.setZoom);
-    window.addEventListener("resize", this.setZoom);
+    window.addEventListener("load", (...props) => this.setZoom(...props));
+    window.addEventListener("resize", (...props) => this.setZoom(...props));
   }
 
   componentWillUnmount() {
@@ -52,7 +55,7 @@ class Slide extends Component {
         (content.parentNode.offsetWidth / 700);
       const minScale = Math.min(contentScaleY, contentScaleX);
 
-      let contentScale = minScale < 1 ? minScale : 1;
+      let contentScale = minScale;
       if (mobile && this.props.viewerScaleMode !== true) {
         contentScale = 1;
       }
@@ -117,7 +120,7 @@ class Slide extends Component {
   render() {
     const { presenterStyle, children } = this.props;
     const { styles, overViewStyles, printStyles } = this.allStyles();
-
+    const self = this;
     if (!this.props.viewerScaleMode) {
       document.documentElement.style.fontSize = `${16 * this.state.zoom}px`;
     }
@@ -125,7 +128,7 @@ class Slide extends Component {
     const contentClass = isUndefined(this.props.className) ? "" : this.props.className;
     return (
       <div className="spectacle-slide"
-        ref={(s) => { this.slideRef = s; }}
+        ref={(s) => { self.slideRef = s; }}
         style={[
           styles.outer,
           getStyles.call(this),
@@ -134,7 +137,7 @@ class Slide extends Component {
         ]}
       >
         <div style={[styles.inner, this.context.overview && overViewStyles.inner]}>
-          <div ref={(c) => { this.contentRef = c; }}
+          <div ref={(c) => { self.contentRef = c; }}
             className={`${contentClass} spectacle-content`}
             style={[
               styles.content,

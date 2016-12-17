@@ -15,6 +15,7 @@ import List from "./components/list";
 import Markdown from "./components/markdown";
 import Quote from "./components/quote";
 import S from "./components/s";
+import Shape from "./components/shape";
 import Slide from "./components/slide";
 import Spectacle from "./components/spectacle";
 import TableHeaderItem from "./components/table-header-item";
@@ -42,6 +43,7 @@ export {
   Markdown,
   Quote,
   S,
+  Shape,
   Slide,
   Spectacle,
   TableHeaderItem,
