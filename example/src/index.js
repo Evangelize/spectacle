@@ -65,21 +65,48 @@ export default class Presentation extends React.Component {
           />
         </Slide>
         <Slide transition={["slide"]} bgImage={images.city.replace("/", "")} bgDarken={0.75}>
-          <Appear fid="1">
-            <Heading size={1} caps fit textColor="primary">
-              Full Width
-            </Heading>
-          </Appear>
-          <Appear fid="2">
-            <Heading size={1} caps fit textColor="tertiary">
-              Adjustable Darkness
-            </Heading>
-          </Appear>
-          <Appear fid="3">
-            <Heading size={1} caps fit textColor="primary">
-              Background Imagery
-            </Heading>
-          </Appear>
+          <Heading
+            size={1}
+            caps
+            fit
+            textColor="primary"
+            entry={{
+              index: 1,
+              duration: 500,
+              easing: "quadInOut",
+              direction: "left"
+            }}
+          >
+            Full Width
+          </Heading>
+          <Heading
+            size={1}
+            caps
+            fit
+            textColor="tertiary"
+            entry={{
+              index: 2,
+              duration: 500,
+              easing: "quadInOut",
+              direction: "left"
+            }}
+          >
+            Adjustable Darkness
+          </Heading>
+          <Heading
+            size={1}
+            caps
+            fit
+            textColor="primary"
+            entry={{
+              index: 3,
+              duration: 500,
+              easing: "quadInOut",
+              direction: "left"
+            }}
+          >
+            Background Imagery
+          </Heading>
         </Slide>
         <Slide transition={["zoom", "fade"]} bgColor="primary">
           <Heading caps fit>Flexible Layouts</Heading>
@@ -127,11 +154,46 @@ export default class Presentation extends React.Component {
         </Slide>
         <Slide transition={["fade"]} bgColor="secondary" textColor="primary">
           <List>
-            <Appear><ListItem>Inline style based theme system</ListItem></Appear>
-            <Appear><ListItem>Autofit text</ListItem></Appear>
-            <Appear><ListItem>Flexbox layout system</ListItem></Appear>
-            <Appear><ListItem>PDF export</ListItem></Appear>
-            <Appear><ListItem>And...</ListItem></Appear>
+            <ListItem
+              entry={{
+                index: 1,
+                duration: 500,
+                easing: "quadInOut",
+                direction: "left"
+              }}
+            >Inline style based theme system</ListItem>
+            <ListItem
+              entry={{
+                index: 2,
+                duration: 500,
+                easing: "quadInOut",
+                direction: "left"
+              }}
+            >Autofit text</ListItem>
+            <ListItem
+              entry={{
+                index: 3,
+                duration: 500,
+                easing: "quadInOut",
+                direction: "left"
+              }}
+            >Flexbox layout system</ListItem>
+            <ListItem
+              entry={{
+                index: 3,
+                duration: 500,
+                easing: "quadInOut",
+                direction: "left"
+              }}
+            >PDF export</ListItem>
+            <ListItem
+              entry={{
+                index: 4,
+                duration: 500,
+                easing: "quadInOut",
+                direction: "left"
+              }}
+            >And...</ListItem>
           </List>
         </Slide>
         <Slide transition={["slide"]} bgColor="primary">

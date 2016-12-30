@@ -3,19 +3,24 @@ import { findDOMNode } from "react-dom";
 import findKey from "lodash/findKey";
 import { connect } from "react-redux";
 import { VictoryAnimation } from "victory-core";
+import { getAnimation } from "../utils/base"
 
 class Appear extends Component {
   state = {
-    active: false
+    active: false,
+    displayed: false
   };
 
   componentWillReceiveProps(nextProps) {
     const state = nextProps.fragment;
     const slide = this.props.route.slide;
     const fragment = findDOMNode(this.fragmentRef);
+    /*
     const key = findKey(state.fragments[slide], {
       id: parseInt(fragment.dataset.fid)
     });
+    */
+    const key = this.props.entry.index;
 
     const shouldDisableAnimation = (
       this.props.route.params.indexOf("export") !== -1 ||
@@ -23,7 +28,10 @@ class Appear extends Component {
     );
 
     if (shouldDisableAnimation) {
-      this.setState({ active: true });
+      this.setState({
+        active: true,
+        displayed: false
+      });
       return;
     }
 
@@ -33,21 +41,30 @@ class Appear extends Component {
     }
   }
 
+  setDisplayed() {
+    this.setState({
+      displayed: true
+    });
+  }
+
   render() {
+    const { easing, duration, direction } = this.props.entry;
     const child = React.Children.only(this.props.children);
-    const endValue = this.state.active ? 1 : 0;
+    const animation = getAnimation(direction);
+    const data = this.state.active ? animation.end : animation.start;
+    //this.setDisplayed();
 
     return (
       <VictoryAnimation
-        data={{ opacity: endValue }}
-        duration={300}
-        easing="quadInOut"
+        data={data}
+        duration={duration}
+        easing={easing}
       >
-        {({ opacity }) => (
+        {({ opacity, transform }) => (
           React.cloneElement(child,
             {
               className: "fragment",
-              style: { opacity },
+              style: { opacity, transform },
               ref: (f) => { this.fragmentRef = f; }
             }
           )
@@ -58,6 +75,7 @@ class Appear extends Component {
 }
 
 Appear.propTypes = {
+  entry: PropTypes.object,
   children: PropTypes.node,
   route: PropTypes.object,
   style: PropTypes.object

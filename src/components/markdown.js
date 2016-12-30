@@ -14,6 +14,7 @@ import ListItem from "./list-item";
 import Quote from "./quote";
 import S from "./s";
 import Text from "./text";
+import Appear from "./appear";
 
 // We can't pass props into mdast-react directly, so we have to "bind" them
 // to spectacle components (ex. headings, strong/em/del)
@@ -68,7 +69,7 @@ export const mdastConfigDefault = {
 };
 
 export default class Markdown extends React.Component {
-  render() {
+  renderTag() {
     const { source, children, mdastConfig } = this.props;
     const content = (isUndefined(source) || source === "") ? children : source;
 
@@ -78,16 +79,31 @@ export default class Markdown extends React.Component {
       </div>
     );
   }
+  render() {
+    const { entry } = this.props;
+    return (entry.index > 0) ? (
+      <Appear entry={entry}>
+        {this.renderTag()}
+      </Appear>
+    ) : this.renderTag();
+  }
 }
 
 Markdown.propTypes = {
   children: PropTypes.node,
+  entry: PropTypes.object,
   mdastConfig: PropTypes.object,
   source: PropTypes.string,
   style: PropTypes.object
 };
 
 Markdown.defaultProps = {
+  entry: {
+    index: 0,
+    duration: 0,
+    easing: "quadInOut",
+    direction: "left"
+  },
   style: {},
   source: "",
   mdastConfig: mdastConfigDefault

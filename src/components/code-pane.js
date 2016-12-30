@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from "react";
 import { getStyles } from "../utils/base";
 import Radium from "radium";
 import isUndefined from "lodash/isUndefined";
+import Appear from "./appear";
 
 const format = (str) => {
   return str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -19,7 +20,7 @@ export default class CodePane extends Component {
       __html: format(code)
     };
   }
-  render() {
+  renderTag() {
     return (
       <pre className={this.props.className} style={[this.context.styles.components.codePane.pre, getStyles.call(this), this.props.style]}>
         <code
@@ -29,6 +30,14 @@ export default class CodePane extends Component {
         />
       </pre>
     );
+  }
+  render() {
+    const { entry } = this.props;
+    return (entry.index > 0) ? (
+      <Appear entry={entry}>
+        {this.renderTag()}
+      </Appear>
+    ) : this.renderTag();
   }
 }
 
@@ -40,12 +49,19 @@ CodePane.contextTypes = {
 CodePane.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
+  entry: PropTypes.object,
   lang: PropTypes.string,
   source: PropTypes.string,
   style: PropTypes.object
 };
 
 CodePane.defaultProps = {
+  entry: {
+    index: 0,
+    duration: 0,
+    easing: "quadInOut",
+    direction: "left"
+  },
   lang: "markup",
   source: ""
 };

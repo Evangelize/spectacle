@@ -8,6 +8,9 @@ import { Transitionable, renderTransition } from "./transitionable";
 @Transitionable
 @Radium
 class Slide extends Component {
+  contentRef;
+  slideRef;
+
   state = {
     contentScale: 1,
     transitioning: true,
@@ -18,28 +21,47 @@ class Slide extends Component {
   componentDidMount() {
     this.setZoom();
     const slide = this.slideRef;
-    const frags = slide.querySelectorAll(".fragment");
+    //const frags = slide.querySelectorAll(".fragment");
+    const frags = this.findUniqueOrder(this.props);
     if (frags && frags.length && !this.context.overview) {
       const lastAction = this.context.store.getState().lastAction;
-      Array.prototype.slice.call(frags, 0).forEach((frag, i) => {
-        frag.dataset.fid = i;
+      frags.forEach((frag, i) => {
+        //frag.dataset.fid = i;
         return this.props.dispatch && this.props.dispatch(addFragment({
           slide: this.props.hash,
-          id: i,
-          visible: this.props.lastSlide > this.props.slideIndex,
+          id: frag,
+          visible: (frag === 0) ? true : this.props.lastSlide > this.props.slideIndex,
           remote: lastAction.type === "REMOTE_STATE"
         }));
       });
     }
-    window.addEventListener("load", this.setZoom);
-    window.addEventListener("resize", this.setZoom);
+    window.addEventListener("load", (...props) => { this.setZoom(...props); });
+    window.addEventListener("resize", (...props) => { this.setZoom(...props); });
   }
 
   componentWillUnmount() {
     window.removeEventListener("resize", this.setZoom);
   }
 
-  setZoom() {
+  findUniqueOrder() {
+    const findOccurrences = (children, occurrences) => {
+      React.Children.forEach(children, (el) => {
+        if (el.props.children && Array.isArray(el.props.children)) {
+          findOccurrences(el.props.children, occurrences);
+        } else if (typeof el.props.children === "object" && el.props.children.props.entry && el.props.children.props.entry.index > 0) {
+          occurrences.push(el.props.children.props.entry.index);
+        } else if (el.props && el.props.entry && el.props.entry.index > 0) {
+          occurrences.push(el.props.entry.index);
+        }
+      });
+    };
+    let occurrences = [];
+    findOccurrences(this.props.children, occurrences);
+    occurrences = occurrences.filter((x, i, a) => a.indexOf(x) === i);
+    return occurrences;
+  }
+
+  setZoom(e) {
     const mobile = window.matchMedia("(max-width: 628px)").matches;
     const content = this.contentRef;
     if (content) {
@@ -52,7 +74,8 @@ class Slide extends Component {
         (content.parentNode.offsetWidth / 700);
       const minScale = Math.min(contentScaleY, contentScaleX);
 
-      let contentScale = minScale < 1 ? minScale : 1;
+      //let contentScale = minScale < 1 ? minScale : 1;
+      let contentScale = minScale;
       if (mobile && this.props.viewerScaleMode !== true) {
         contentScale = 1;
       }
@@ -115,6 +138,7 @@ class Slide extends Component {
 
   @renderTransition
   render() {
+    const self = this;
     const { presenterStyle, children } = this.props;
     const { styles, overViewStyles, printStyles } = this.allStyles();
 
@@ -125,7 +149,7 @@ class Slide extends Component {
     const contentClass = isUndefined(this.props.className) ? "" : this.props.className;
     return (
       <div className="spectacle-slide"
-        ref={(s) => { this.slideRef = s; }}
+        ref={(s) => { self.slideRef = s; }}
         style={[
           styles.outer,
           getStyles.call(this),
@@ -134,7 +158,7 @@ class Slide extends Component {
         ]}
       >
         <div style={[styles.inner, this.context.overview && overViewStyles.inner]}>
-          <div ref={(c) => { this.contentRef = c; }}
+          <div ref={(c) => { self.contentRef = c; }}
             className={`${contentClass} spectacle-content`}
             style={[
               styles.content,

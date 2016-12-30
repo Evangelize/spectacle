@@ -1,9 +1,11 @@
 import React, { Component, createElement, PropTypes } from "react";
 import { getStyles } from "../utils/base";
 import Radium from "radium";
+import Appear from "./appear";
 
 @Radium
 export default class Heading extends Component {
+  containerRef;
   constructor() {
     super();
     this.resize = this.resize.bind(this);
@@ -25,7 +27,7 @@ export default class Heading extends Component {
     window.removeEventListener("resize", this.resize);
   }
   resize() {
-    if (this.props.fit) {
+    if (this.props.fit && this.containerRef) {
       const text = this.textRef;
       const container = this.containerRef;
       text.style.display = "inline-block";
@@ -38,7 +40,11 @@ export default class Heading extends Component {
       });
     }
   }
-  render() {
+  setRef(e) {
+    this.containerRef = e;
+  }
+  renderTag() {
+    const self = this;
     const { size, lineHeight, fit, style, children } = this.props;
     const Tag = `H${size}`;
     const styles = {
@@ -61,19 +67,23 @@ export default class Heading extends Component {
       }
     };
     const typefaceStyle = this.context.typeface || {};
+    const divStyle = [
+      this.context.styles.components.heading[`h${size}`],
+      getStyles.call(this),
+      styles.container
+    ];
     return (
       fit ? (
+        <div>
         <div
           className={this.props.className}
-          ref={(c) => { this.containerRef = c; }}
-          style={[
-            this.context.styles.components.heading[`h${size}`],
-            getStyles.call(this), styles.container
-          ]}
+          ref={(c) => { this.setRef(c); }}
+          style={divStyle}
         >
           <span ref={(t) => { this.textRef = t; }} style={[styles.text, style, typefaceStyle]}>
             {children}
           </span>
+        </div>
         </div>
       ) : (
         createElement(Tag, {
@@ -83,9 +93,26 @@ export default class Heading extends Component {
       )
     );
   }
+  render() {
+    const { entry } = this.props;
+    return (entry.index > 0) ?
+    (
+      <Appear entry={entry}>
+        {this.renderTag()}
+      </Appear>
+    ) :
+    this.renderTag();
+  }
 }
 
+
 Heading.defaultProps = {
+  entry: {
+    index: 0,
+    duration: 0,
+    easing: "quadInOut",
+    direction: "left"
+  },
   size: 1,
   lineHeight: 1
 };
@@ -93,6 +120,7 @@ Heading.defaultProps = {
 Heading.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
+  entry: PropTypes.object,
   fit: PropTypes.bool,
   lineHeight: PropTypes.number,
   size: PropTypes.number,

@@ -148,3 +148,34 @@ export const getStyles = function getStyles() {
   return styles;
 };
 
+export const getAnimation = (direction) => {
+  const data = {
+    start: {
+      opacity: 0,
+      transform: "translateX(0px)"
+    },
+    end: {
+      opacity: 1,
+      transform: "translateX(0px)"
+    }
+  };
+  switch (direction) {
+    case "left":
+      data.start.transform = "translateX(-300px)";
+      data.end.transform = "translateX(0px)";
+      break;
+    case "top":
+      data.start.transform = "translateY(-800px)";
+      data.end.transform = "translateY(0px)";
+      break;
+    case "bottom":
+      data.start.transform = "translateY(800px)";
+      data.end.transform = "translateY(0px)";
+      break;
+    default:
+      data.start.transform = "translateX(800px)";
+      data.end.transform = "translateX(0px)";
+      break;
+  }
+  return data;
+};
